@@ -9,7 +9,7 @@ export const connectStorage = async () => {
     useSSL: false,
     accessKey: process.env.MINIO_KEY,
     secretKey: process.env.MINIO_SECRET,
-  })
+  });
 
   console.log('connected to store');
 };

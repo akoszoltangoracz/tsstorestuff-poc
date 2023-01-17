@@ -122,10 +122,6 @@ export const finalizeFile: AsyncHandler = async (req: Request, res: Response<obj
   }
 };
 
-export const createHook: AsyncHandler = async (req: Request, res: Response) => {
-  res.json([]);
-};
-
 export const downloadFile: AsyncHandler = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {

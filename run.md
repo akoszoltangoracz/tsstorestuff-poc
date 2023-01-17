@@ -1,4 +1,3 @@
-
 # containers
 # minio
 ```
@@ -10,6 +9,7 @@ docker run --rm --name=minio -p 9000:9000 -p 9001:9001 -v ~/volumes/minio:/data 
 docker run -it --rm --name mc --entrypoint=/bin/bash minio/mc
 mc alias set dev http://192.168.1.160:9000 minioadmin minioadmin
 mc admin config get dev/ notify_nats
+mc admin config set dev/ notify_nats:localnats address=192.168.1.160:4222 subject=file_uploaded
 mc admin service restart dev/
 mc event add dev/filestore arn:minio:sqs::localnats:nats --event put
 
