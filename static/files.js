@@ -47,6 +47,12 @@ const FilesPage = Vue.component('files-page', {
   },
   async mounted() {
     await this.listFiles();
+
+    const ws = new WebSocket('ws://192.168.1.160:8001/ws');
+    ws.onmessage = async event => {
+      console.log(`received ws message ${event.data}`);
+      await this.listFiles();
+    }
   },
 });
 

@@ -1,5 +1,12 @@
 import * as ws from 'ws';
-import { connectBus, bus } from '../services/bus';
+import { bus } from '../services/bus';
+import { JSONCodec } from 'nats';
+
+interface MinioEvent {
+  Key: string,
+};
+
+const jc = JSONCodec<MinioEvent>();
 
 type ClientMap = {
   [key: number]: ws;
@@ -10,9 +17,18 @@ let cnt: number = 0;
 const sockets: ClientMap = {};
 
 const listenBus = async () => {
+  console.log('started listening for uploads');
   const subscription = bus.connection.subscribe('file_uploaded', { queue: 'finalizer' });
   for await (const m of subscription) {
-    console.log('file uploaded');
+    const message = jc.decode(m.data);
+
+    // console.log('message', JSON.stringify(message, null, 2));
+    console.log(`received upload upload ${message.Key}`);
+
+    for (const clientId in sockets) {
+      console.log(`--- notified client ${clientId}`);
+      sockets[clientId].send(`file uploaded ${message.Key}`);
+    }
   }
 }
 

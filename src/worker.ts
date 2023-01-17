@@ -24,10 +24,6 @@ const handleFile = async (message: ResizeMessage): Promise<void> => {
     height: 100,
   });
 
-  await minioClient.fPutObject(message.destBucket, message.destKey, destPath);
-  fs.unlinkSync(tmpPath);
-  fs.unlinkSync(destPath);
-
   await collections.fileEntires.updateOne({
     _id: new ObjectId(message.id),
   }, {
@@ -35,7 +31,11 @@ const handleFile = async (message: ResizeMessage): Promise<void> => {
       thumb: message.destKey,
       status: FileStatus.Finished,
     },
-  })
+  });
+
+  await minioClient.fPutObject(message.destBucket, message.destKey, destPath);
+  fs.unlinkSync(tmpPath);
+  fs.unlinkSync(destPath);
 };
 
 const messageLoop = async () => {
@@ -43,6 +43,7 @@ const messageLoop = async () => {
   for await (const m of subscription) {
     const message: ResizeMessage = jc.decode(m.data);
     console.log(`> received message ${message.srcKey}`);
+    await new Promise(r => setTimeout(r, 2000));
     await handleFile(message);
     console.log(`+ finished ${message.srcKey}`);
   }
