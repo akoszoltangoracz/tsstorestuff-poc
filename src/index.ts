@@ -1,3 +1,4 @@
+import expressWs_, { Instance } from 'express-ws';
 import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import * as bodyParser from 'body-parser';
@@ -6,6 +7,7 @@ import morgan from 'morgan';
 import { connectDb } from './services/db';
 import { connectStorage } from './services/store';
 import { connectBus } from './services/bus';
+import { initSocket } from './routes/sockets';
 import { listFiles, createFile, downloadFile, finalizeFile } from './routes/files';
 
 const main = async () => {
@@ -13,9 +15,11 @@ const main = async () => {
 
   const app: Express = express();
 
+  const expressWs: Instance = expressWs_(app);
+
   app.use(morgan('tiny'));
   app.use(bodyParser.json({limit: '50mb'}));
-  app.use('/static', express.static('static'))
+  app.use('/static', express.static('static'));
 
   let port: number = 8001;
 
@@ -29,6 +33,8 @@ const main = async () => {
   app.post('/api/files', createFile);
   app.post('/api/files/:id/finalize', finalizeFile);
   app.get('/api/files/:id/download', downloadFile);
+
+  initSocket(app);
 
   app.listen(port, () => {
     console.log(`listening on port ${port}`);

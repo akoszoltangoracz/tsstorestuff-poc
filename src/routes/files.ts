@@ -104,7 +104,7 @@ export const createFile: AsyncHandler = async (req: Request<{}, {}, UploadReques
   res.json(response);
 };
 
-export const finalizeFile: AsyncHandler = async (req: Request, res: Response) => {
+export const finalizeFile: AsyncHandler = async (req: Request, res: Response<object, any>) => {
   const { id } = req.params;
 
   try {

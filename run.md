@@ -18,14 +18,14 @@ docker build -t node-ts-imagemagic .
 # services
 ## worker
 ```
-docker run -it -v ~/stuff/tsstorestuff:/app node-ts-imagemagic /bin/bash
+docker run -it --rm --name ts-wrk -v ~/stuff/tsstorestuff:/app node-ts-imagemagic /bin/bash
 cd app/
 npx ts-node src/worker.ts
 ```
 
 ## server
 ```
-docker run -it -v ~/stuff/tsstorestuff:/app -p 8001:8001 node-ts-imagemagic /bin/bash
+docker run --rm --name ts-srv -it -v ~/stuff/tsstorestuff:/app -p 8001:8001 node-ts-imagemagic /bin/bash
 cd app/
 npx ts-node src/index.ts
 ```
