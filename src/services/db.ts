@@ -1,5 +1,5 @@
 import { MongoClient, Collection, Db } from 'mongodb';
-import { FileEntry } from '../models';
+import { FileEntry } from '../models/models';
 
 interface DbCollections {
   fileEntires?: Collection<FileEntry>,

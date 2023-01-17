@@ -1,5 +1,5 @@
-import expressWs_, { Instance } from 'express-ws';
-import express, { Express } from 'express';
+import expressWs from 'express-ws';
+import express, { Application } from 'express';
 import dotenv from 'dotenv';
 import * as bodyParser from 'body-parser';
 import morgan from 'morgan';
@@ -13,9 +13,9 @@ import { listFiles, createFile, downloadFile, finalizeFile } from './routes/file
 const main = async () => {
   dotenv.config();
 
-  const app: Express = express();
+  const app: Application = express();
 
-  const expressWs: Instance = expressWs_(app);
+  expressWs(app);
 
   app.use(morgan('tiny'));
   app.use(bodyParser.json({limit: '50mb'}));

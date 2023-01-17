@@ -22,7 +22,6 @@ const listenBus = async () => {
   for await (const m of subscription) {
     const message = jc.decode(m.data);
 
-    // console.log('message', JSON.stringify(message, null, 2));
     console.log(`received upload upload ${message.Key}`);
 
     for (const clientId in sockets) {

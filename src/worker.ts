@@ -2,13 +2,13 @@ import dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { ResizeMessage, FileStatus } from './models';
-import { connectDb, collections } from './services/db';
+import { ResizeMessage } from './models/models';
+import * as dao from './models/dao';
+import { connectDb } from './services/db';
 import { connectStorage, minioClient } from './services/store';
 import { connectBus, bus } from './services/bus';
 import { JSONCodec } from 'nats';
 import { thumbnail } from 'easyimage';
-import { ObjectId } from 'mongodb';
 
 const jc = JSONCodec<ResizeMessage>();
 
@@ -24,14 +24,7 @@ const handleFile = async (message: ResizeMessage): Promise<void> => {
     height: 100,
   });
 
-  await collections.fileEntires.updateOne({
-    _id: new ObjectId(message.id),
-  }, {
-    $set: {
-      thumb: message.destKey,
-      status: FileStatus.Finished,
-    },
-  });
+  await dao.updateThumb(message.id, message.destKey);
 
   await minioClient.fPutObject(message.destBucket, message.destKey, destPath);
   fs.unlinkSync(tmpPath);
